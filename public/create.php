@@ -1,5 +1,21 @@
 
    <?php
+   session_start();
+   // var_dump($_SERVER);
+   // die()
+
+
+   if ($_SERVER['REQUEST_METHOD']=== 'POST'){
+
+   }
+
+   $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+   die();
+   
+   ?>
+   
+   
+   <?php
     $title = "Nouveau film";
     $description= "Ajout d'un nouveau film...";
     $keywords = "Cinéma, répertoire, film, dwwm";
@@ -28,9 +44,9 @@
                      </div>
                      <div class="mb-3">
                         <label for="comment">Laissez un commentaire</label>
-                        <textarea name="comment" id="comment" class="form-control"></textarea>
-
+                        <textarea name="comment" id="comment" class="form-control" rows="4"></textarea>
                      </div>
+                     <input type="hidden" name="csrf_token" value="<?=  $_SESSION['csrf_token']; ?>">
                      <div>
                         <input type="submit" value="Ajouter" class="w-100 btn btn-primary shadow">
                      </div>
