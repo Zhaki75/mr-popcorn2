@@ -54,4 +54,24 @@
             }
   
 
-}
+    }
+
+    /**
+     * Cette fonction permet de recupérer tous les films de la base de données.
+     *
+     * @return array
+     */
+        function getFilms(): array {
+        $db = connectToDb();
+
+        try {
+            $req = $db->prepare("SELECT * FROM film ORDER BY created_at DESC");
+            $req->execute();
+            $films = $req->fetchAll();
+            $req->closeCursor(); // Non obligatoire.
+        } catch (\PDOException $exception) {
+            throw $exception;
+        }
+
+        return $films;
+    }
