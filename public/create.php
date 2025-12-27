@@ -4,6 +4,7 @@
    // var_dump($_SERVER);
    // die()
 
+   require_once __DIR__ . "/../functions/db.php";
 
    if ($_SERVER['REQUEST_METHOD']=== 'POST'){
 
@@ -70,8 +71,7 @@
             $_SESSION['form_errors'] = $formErrors;
 
 
-
-
+            $_SESSION['old'] = $_POST;
 
 
             header('Location: create.php');
@@ -79,17 +79,29 @@
 
          }
 
-            die('continuer la partie');
+          $ratingRounted = null;
+
+        if (isset ($_POST['rating']) && $_POST['rating'] !== ""){
+            $ratingRounted = round($_POST['rating'], 1);
+        }
+
+
+            // die('continuer la partie');
+
+            insertFilm($ratingRounted, $_POST);
+
+            $_SESSION['success'] = "Le film a été ajouté à la liste avec succés.";
+
+            header("Location: index.php");
+            die();
+
 
       }
-
-   
 
    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
    // die();
    
    ?>
-   
    
    <?php
     $title = "Nouveau film";
@@ -122,27 +134,29 @@
                   </div>
                   <?php endif ?>
 
-
-
-                  <form method="post">
-                     <div class="mb-3">
-                        <label for="title">Titre <span class="text-danger">*</label>
-                        <input type="text" name="title" id="title" class="form-control" autofocus>
-                     </div>
-                     <div class="mb-3">
-                        <label for="title">Note / 5</label>
-                        <input type="number" min="0" max="5" step="0.5" inputmode="decimal" name="rating" id="title" class="form-control" autofocus>
-                     </div>
-                     <div class="mb-3">
-                        <label for="comment">Laissez un commentaire</label>
-                        <textarea name="comment" id="comment" class="form-control" rows="4"></textarea>
-                     </div>
-                     <input type="hidden" name="csrf_token" value="<?=  $_SESSION['csrf_token']; ?>">
-                     <input type="hidden" name="honey_pot" value="">
-                     <div>
-                        <input formnovalidate type ="submit" value="Ajouter" class="w-100 btn btn-primary shadow">
-                     </div>
+                     <form method="post">
+                        <div class="mb-3">
+                           <label for="title">Titre <span class="text-danger">*</span></label>
+                           <input type="text" name="title" id="title" class="form-control" autofocus required value="<?= isset($_SESSION['old']['title']) && !empty($_SESSION['old']['title']) ? htmlspecialchars($_SESSION['old']['title']) : ''; unset($_SESSION['old']['title']); ?>">
+                        </div>
+                        <div class="mb-3">
+                           <label for="rating">Note / 5</label>
+                           <input type="number" min="0" max="5" step="0.5" inputmode="decimal" name="rating" id="rating" class="form-control" value="<?= isset($_SESSION['old']['rating']) && $_SESSION['old']['rating'] != "" ? htmlspecialchars($_SESSION['old']['rating']) : ''; unset($_SESSION['old']['rating']); ?>">
+                        </div>
+                        <div class="mb-3">
+                           <label for="comment">Laissez un commentaire</label>
+                           <textarea name="comment" id="comment" class="form-control" rows="4"><?= isset($_SESSION['old']['comment']) && !empty($_SESSION['old']['comment']) ? htmlspecialchars($_SESSION['old']['comment']) : ''; unset($_SESSION['old']['comment']); ?></textarea>
+                           <small id="comment-counter">
+                              0 / 1000 caractères
+                           </small>
+                        </div>
+                        <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token'];?>">
+                        <input type="hidden" name="honey_pot" value="">
+                        <div>
+                           <input formnovalidate type="submit" value="Ajouter" class="w-100 btn btn-primary shadow">
+                        </div>
                   </form>
+
                </div>
              </div>
          </main>

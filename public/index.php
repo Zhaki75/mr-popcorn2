@@ -1,4 +1,9 @@
     <?php
+    session_start();
+
+    ?>
+    
+    <?php
     $title = "Liste des films";
     $description= "Découvrez la liste...";
     $keywords = "Cinéma, répertoire, film, dwwm";
@@ -18,6 +23,15 @@
                     Ajouter film
                 </a>
             </div>
+
+            <?php if(isset($_SESSION['success']) && !empty($_SESSION['success'])) : ?>
+                <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                    <?= $_SESSION['success']; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php unset($_SESSION['success']); ?>
+                
+                <?php endif ?>
          </main>
     
     <?php include_once __DIR__ . "/../partials/footer.php"; ?>
